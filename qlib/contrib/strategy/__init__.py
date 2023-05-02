@@ -4,6 +4,7 @@
 
 from .signal_strategy import (
     TopkDropoutStrategy,
+    TopkDropoutRiskAdjustedStrategy,
     WeightStrategyBase,
     EnhancedIndexingStrategy,
 )

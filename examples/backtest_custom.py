@@ -1,8 +1,9 @@
 import numpy as np
+import json
 import qlib
 from qlib.utils.time import Freq
 from qlib.backtest import backtest, executor
-from qlib.contrib.strategy import TopkDropoutRiskAdjustedStrategy
+from qlib.contrib.strategy import TruncatedTopkDropoutStrategy, TopkDropoutRiskAdjustedStrategy, TopkDropoutStrategy
 
 # init qlib
 qlib.init(provider_uri='~/.qlib/qlib_data/my_data/sp500_components')
@@ -15,13 +16,13 @@ BENCH = "^GSPC"
 # It is different from the argument `market`, which indicates a universe of stocks (e.g. **A SET** of stocks like csi300)
 # For example, you can query all data from a stock market with the code below.
 # ` D.features(D.instruments(market='csi300'), ["$close"], start_time='2010-01-01', end_time='2017-12-31', freq='day')`
-pred_score = np.load('test_gats/decay_001/1/69bdd9a5a84c48e3a1852e76809315e1/artifacts/pred.pkl', allow_pickle=True)
+pred_score = np.load('test_gats_mse_returns/1/2b1eb57847a04eb8932c287f983191c7/artifacts/pred.pkl', allow_pickle=True)
 
 FREQ = "day"
 STRATEGY_CONFIG = {
     "topk": 50,
     "n_drop": 5,
-    "riskmodel_path": "/home/erohar/qlib/examples/portfolio/riskdata",
+    #"riskmodel_path": "/home/erohar/qlib/examples/portfolio/riskdata",
     # pred_score, pd.Series
     "signal": pred_score,
 }
@@ -38,16 +39,36 @@ backtest_config = {
     "benchmark": BENCH,
     "exchange_kwargs": {
         "freq": FREQ,
+        "codes": ['PNW', 'MA', 'FDX', 'BEN', 'NKE', 'CSX', 'F', 'PKI', 'PHM', 'ADSK', 'JNJ', 'LMT', 'FIS', 'ITW', 'SHW', 'ADI', 
+                'PRU', 'PFG', 'USB', 'GILD', 'LIN', 'FITB', 'UNM', 'NSC', 'HIG', 'AIZ', 'BDX', 'CMS', 'DVN', 'PEP', 'PGR', 'AMT', 
+                'CMA', 'PWR', 'K', 'BKNG', 'ABC', 'CMI', 'COST', 'UNP', 'LEG', 'TROW', 'MMM', 'GD', 'CTSH', 'CMCSA', 'FISV', 
+                'ZION', 'CL', 'HPQ', 'RF', 'CHRW', 'MAR', 'WEC', 'TPR', 'APH', 'LHX', 'CINF', 'PFE', 'JPM', 'SJM', 'HD', 'JNPR', 
+                'IRM', 'RSG', 'LLY', 'KLAC', 'GIS', 'WMB', 'AIG', 'AIV', 'NRG', 'RL', 'GPC', 'XRX', 'TMO', 'UNH', 'CF', 'EOG', 
+                'PEG', 'COF', 'STT', 'LH', 'GS', 'WMT', 'C', 'HST', 'OMC', 'PLD', 'PXD', 'ROST', 'SYK', 'OXY', 'DGX', 'AAPL', 
+                'CTAS', 'GPS', 'IPG', 'GL', 'AXP', 'HON', 'KIM', 'ROP', 'AES', 'ES', 'PSA', 'AFL', 'KMB', 'CCL', 'ORLY', 'GWW', 
+                'GE', 'EXC', 'MDT', 'SEE', 'TGT', 'TRV', 'MCHP', 'WDC', 'XOM', 'HBAN', 'APD', 'MKC', 'MS', 'HES', 'ETR', 'MMC', 
+                'VNO', 'LNC', 'NEM', 'TAP', 'BAC', 'MRO', 'PEAK', 'IFF', 'AKAM', 'ALL', 'IP', 'VMC', 'FLS', 'DHR', 'MET', 'NUE', 
+                'CNP', 'CAT', 'TXT', 'ED', 'CVX', 'SCHW', 'ETN', 'WM', 'WU', 'GOOG', 'MTB', 'SWK', 'RHI', 'KEY', 'AVB', 'GLW', 
+                'CAG', 'AEE', 'T', 'PPG', 'ORCL', 'WELL', 'AMGN', 'SPGI', 'MU', 'CBRE', 'UAA', 'WY', 'EFX', 'IVZ', 'HAL', 'OKE', 
+                'WFC', 'DUK', 'WYNN', 'WAT', 'PG', 'EA', 'NOC', 'BSX', 'NDAQ', 'LEN', 'BA', 'RTX', 'BMY', 'FMC', 'NVDA', 'WHR', 
+                'YUM', 'NEE', 'AMP', 'SO', 'EIX', 'CSCO', 'VFC', 'COP', 'EMR', 'ISRG', 'ZBH', 'AEP', 'AMAT', 'AZO', 'NOV', 
+                'LOW', 'MSI', 'VRSN', 'TFC', 'INTU', 'SBUX', 'NTAP', 'DRI', 'SRE', 'DE', 'EXPE', 'PAYX', 'VLO', 'FCX', 'ROK', 'AVY', 
+                'LUV', 'PH', 'SPG', 'DFS', 'CI', 'KO', 'PNC', 'CPB', 'WBA', 'MDLZ', 'TXN', 'A', 'EMN', 'HAS', 'STZ', 'D', 'ECL', 
+                'IBM', 'QCOM', 'HUM', 'HSY', 'DIS', 'DTE', 'DOV', 'INTC', 'UPS', 'CLX', 'KR', 'PCAR', 'FE', 'BKR', 'LUMN', 'MO', 
+                'APA', 'AMZN', 'NWL', 'ADM', 'BBY', 'NI', 'TJX', 'XEL', 'DVA', 'EL', 'EQR', 'EXPD', 'XRAY', 'DHI', 'CAH', 'MRK', 
+                'MSFT', 'AON', 'BIIB', 'ICE', 'L', 'SNA', 'VZ', 'TT', 'NTRS', 'BXP', 'EBAY', 'BK', 'MAS', 'MCK', 'SLB', 'FTI', 'J', 
+                'PPL', 'SYY', 'BAX', 'MCO', 'CME', 'ABT', 'ADP', 'TSN', 'MCD', 'ADBE', 'CVS'],
         "limit_threshold": 0.095,
         "deal_price": "close",
         "open_cost": 0.0005,
         "close_cost": 0.0015,
         "min_cost": 5,
+        "trade_unit": 1
     },
 }
 
 # strategy object
-strategy_obj = TopkDropoutRiskAdjustedStrategy(**STRATEGY_CONFIG)
+strategy_obj = TopkDropoutStrategy(**STRATEGY_CONFIG)
 # executor object
 executor_obj = executor.SimulatorExecutor(**EXECUTOR_CONFIG)
 # backtest
@@ -56,5 +77,4 @@ analysis_freq = "{0}{1}".format(*Freq.parse(FREQ))
 # backtest info
 report_normal, positions_normal = portfolio_metric_dict.get(analysis_freq)
 
-report_normal.to_csv('risk_adjusted_top50_5.csv')
-print(report_normal)
+report_normal.to_csv('top50_5_100M_gats_mse_ret.csv')

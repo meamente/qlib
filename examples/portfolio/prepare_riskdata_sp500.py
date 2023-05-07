@@ -28,20 +28,14 @@ def prepare_data(riskdata_root="./riskdata", T=240, start_time="2016-01-22"):
 
         codes = universe.loc[date].index
         price = price_all.loc[ref_date:date, codes]
-
-        # calculate return and remove extreme return
-        ret = price.pct_change()
-        ret.clip(ret.quantile(0.025), ret.quantile(0.975), axis=1, inplace=True)
-
-        # run risk model
-        cov_x = riskmodel.predict(ret, is_price=False, return_decomposed_components=False)
+        std_x = price.std(axis=0)
 
         # save risk data
         root = riskdata_root + "/" + date.strftime("%Y%m%d")
         os.makedirs(root, exist_ok=True)
 
         # for specific_risk we follow the convention to save volatility
-        pd.Series(np.sqrt(np.diagonal(cov_x)), index=codes).to_pickle(root + "/risk.pkl")
+        std_x.to_pickle(root + "/risk.pkl")
 
 
 if __name__ == "__main__":

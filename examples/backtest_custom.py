@@ -16,7 +16,7 @@ BENCH = "^GSPC"
 # It is different from the argument `market`, which indicates a universe of stocks (e.g. **A SET** of stocks like csi300)
 # For example, you can query all data from a stock market with the code below.
 # ` D.features(D.instruments(market='csi300'), ["$close"], start_time='2010-01-01', end_time='2017-12-31', freq='day')`
-pred_score = np.load('test_gats_mse_returns/1/2b1eb57847a04eb8932c287f983191c7/artifacts/pred.pkl', allow_pickle=True)
+pred_score = np.load('test_gats/decay_001/1/69bdd9a5a84c48e3a1852e76809315e1/artifacts/pred.pkl', allow_pickle=True)
 
 FREQ = "day"
 STRATEGY_CONFIG = {
@@ -77,4 +77,5 @@ analysis_freq = "{0}{1}".format(*Freq.parse(FREQ))
 # backtest info
 report_normal, positions_normal = portfolio_metric_dict.get(analysis_freq)
 
-report_normal.to_csv('top50_5_100M_gats_mse_ret.csv')
+report_normal.to_csv('risk_adjusted_top50_5.csv')
+print(report_normal)

@@ -427,6 +427,16 @@ class Alpha158(DataHandlerLP):
         return fields, names
 
 
+class Alpha158WStates(Alpha158):
+
+    def get_feature_config(self):
+        fields, names = super().get_feature_config()
+        fields.append('$state')
+        names.append('STATE')
+
+        return fields, names
+
+
 class Alpha158vwap(Alpha158):
     def get_label_config(self):
         return ["Ref($vwap, -2)/Ref($vwap, -1) - 1"], ["LABEL0"]

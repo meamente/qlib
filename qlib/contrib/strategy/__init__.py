@@ -6,6 +6,7 @@ from .signal_strategy import (
     TopkDropoutStrategy,
     TopkDropoutRiskAdjustedStrategy,
     TruncatedTopkDropoutStrategy,
+    TruncatedTopkDropoutWStatesStrategy,
     WeightStrategyBase,
     EnhancedIndexingStrategy,
 )
@@ -23,6 +24,7 @@ __all__ = [
     "TopkDropoutStrategy",
     "TruncatedTopkDropoutStrategy",
     "TopkDropoutRiskAdjustedStrategy",
+    "TruncatedTopkDropoutWStatesStrategy",
     "WeightStrategyBase",
     "EnhancedIndexingStrategy",
     "TWAPStrategy",

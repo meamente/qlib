@@ -4,16 +4,16 @@ import pandas as pd
 import numpy as np
 
 # developed by Bilor
-def Sharpe_and_Sortino(returns, target_return=0.1,  risk_free=0.001):
+def sharpe_and_sortino(returns, target_return=0.1,  risk_free=0.001):
     L=len(returns)
     risk_adjusted = risk_free/L
     target_adjusted = target_return/L
     eps=1e-6
     
-    SP_sharpe = (returns.mean() - risk_adjusted)  / (np.std(returns)+eps)*np.sqrt(L)
+    sp_sharpe = (returns.mean() - risk_adjusted)  / (np.std(returns)+eps)*np.sqrt(L)
 
     cum_return = np.prod(returns[1:]+1)-1
-    SP_sortino_num = cum_return - risk_adjusted 
+    sp_sortino_num = cum_return - risk_adjusted 
     downside_diff =  returns - target_adjusted
     downside_diff = downside_diff[downside_diff < 0]
     if np.any(downside_diff):
@@ -21,9 +21,9 @@ def Sharpe_and_Sortino(returns, target_return=0.1,  risk_free=0.001):
         downside_deviation = np.sqrt(downside_diff.mean())
     else:
         downside_deviation = 0
-    SP_sortino = SP_sortino_num / (downside_deviation + eps)
+    sp_sortino = sp_sortino_num / (downside_deviation + eps)
 
-    return SP_sharpe, SP_sortino
+    return sp_sharpe, sp_sortino
 
 # developed by Ashot from code provided by Bilor
 def cum_returns(input_data, win_size, start, end):
@@ -62,11 +62,11 @@ def granular_frame_extractor(input_data, win_size, target_return, risk_free, int
         #print("i=", i)
         if i % k == 0:
             
-            SP_sharpe, SP_sortino = Sharpe_and_Sortino(np.array(rets_for_sharpe),
+            sp_sharpe, sp_sortino = sharpe_and_sortino(np.array(rets_for_sharpe),
                                                        target_return=target_return,
                                                        risk_free=risk_free)
-            Sharpe.append(SP_sharpe)
-            Sortino.append(SP_sortino)
+            Sharpe.append(sp_sharpe)
+            Sortino.append(sp_sortino)
             rets_for_sharpe = []
     
             data_i = data.iloc[i:i+1].index
@@ -167,7 +167,7 @@ from qlib.workflow import R
 provider_uri = "~/.qlib/qlib_data/my_data/sp500_components"
 qlib.init(provider_uri=provider_uri)
 
-gats_gspc_in_train = R.load_object("/home/ashotnanyan/gats_report_normal_gspc_in_train.pkl")
+gats_gspc_in_train = R.load_object("/home/ashotnanyan/gats_gspc_in_train.pkl")
 alstm_with_gats = R.load_object("/home/ashotnanyan/mlruns/3/dac4e43398c04675a276dde3c75160d0/artifacts/portfolio_analysis/report_normal_1day.pkl")
 gats_lamb08_gspc_in_train = R.load_object("/home/ashotnanyan/qlib/examples/test_precise_margin_ranking/lamb_08_btest/1/7664c61f96554a7482f6e64a018a2233/artifacts/portfolio_analysis/report_normal_1day.pkl")
 gats_alstm_lambda_in_one_loss = R.load_object("/home/ashotnanyan/qlib/examples/test_gats_alstm/08_in_one_loss/1/4a0bfff99d7842dfbaacbd8bce5c2c23/artifacts/portfolio_analysis/report_normal_1day.pkl")
@@ -185,6 +185,6 @@ accounts = {"BENCH": account_bench,
             "ALSTM_with_GATs": account_alstm_with_gats, 
             "GATs_lamb08": account_gats_lamb08_gspc_in_train, 
             "GATs_ALSTM_lambda_in_one_loss": account_gats_alstm_lambda_in_one_loss,
-            "GATs_lamb08_sector_feat_etf": account_gats_lamb08_sector_feat_etf}
+            "GATs_lamb08_feat_etf": account_gats_lamb08_sector_feat_etf}
 
 print(create_ss(accounts=accounts))

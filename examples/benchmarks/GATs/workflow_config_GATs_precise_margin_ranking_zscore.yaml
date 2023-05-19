@@ -27,7 +27,7 @@ data_handler_config: &data_handler_config
                 'APA', 'AMZN', 'NWL', 'ADM', 'BBY', 'NI', 'TJX', 'XEL', 'DVA', 'EL', 'EQR', 'EXPD', 'XRAY', 'DHI', 'CAH', 'MRK', 
                 'MSFT', 'AON', 'BIIB', 'ICE', 'L', 'SNA', 'VZ', 'TT', 'NTRS', 'BXP', 'EBAY', 'BK', 'MAS', 'MCK', 'SLB', 'FTI', 'J', 
                 'PPL', 'SYY', 'BAX', 'MCO', 'CME', 'ABT', 'ADP', 'TSN', 'MCD', 'ADBE', 'CVS', 
-                '^GSPC', 'IYW', 'IYH', 'IYC', 'IYZ', 'IYF', 'IYJ', 'IYK', 'IDU', 'IYR', 'IYM', 'IYE']
+                '^GSPC']
   infer_processors:
     - class: FilterCol
       kwargs:
@@ -44,7 +44,7 @@ data_handler_config: &data_handler_config
         fields_group: feature
   learn_processors:
     - class: DropnaLabel
-    - class: CSRankNorm
+    - class: CSZScoreNorm
       kwargs:
         fields_group: label
   label: ['Ref($close, -2) / Ref($close, -1) - 1']
@@ -102,12 +102,15 @@ task:
       weight_decay: 0.001
       early_stop: 10
       metric: loss
-      loss: mse
+      loss: precise_margin_ranking_w_mse
+      lamb1_precise_margin_ranking: 0.8
+      lamb2_precise_margin_ranking: 0.2
+      func_precise_margin_ranking: linear
       base_model: LSTM
-      model_path: benchmarks/LSTM/csi300_lstm_ts.pkl
+      model_path: /home/ashotnanyan/qlib/examples/benchmarks/LSTM/csi300_lstm_ts.pkl
       GPU: 0
       tensorboard_path: /home/ashotnanyan/qlib/tensorboard_logs
-      print_iter: 50
+      print_iter: 200
   dataset:
     class: TSDatasetH
     module_path: qlib.data.dataset

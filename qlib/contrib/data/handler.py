@@ -426,6 +426,45 @@ class Alpha158(DataHandlerLP):
 
         return fields, names
 
+class Alpha158EtfFeat(Alpha158):
+    
+    def get_feature_config(self):
+        conf = {
+            "kbar": {},
+            "price": {
+                "windows": [0],
+                "feature": ["OPEN", "HIGH", "LOW", "VWAP"],
+            },
+            "rolling": {},
+        }
+        fields, names = self.parse_config_to_fields(conf)
+        fields += [
+            "$cons_discr",
+            "$it",
+            "$materials",
+            "$health",
+            "$cons_staples",
+            "$energy",
+            "$real_estate",
+            "$financials",
+            "$utilities",
+            "$communication",
+            "$industrials"
+        ]
+        names += [
+            "CONS_DISCR",
+            "IT",
+            "MATERIALS",
+            "HEALTH",
+            "CONS_STAPLES",
+            "ENERGY",
+            "REAL_ESTATE",
+            "FINANCIALS",
+            "UTILITIES",
+            "COMMUNICATION",
+            "INDUSTRIALS"
+        ]
+        return fields, names
 
 class Alpha158vwap(Alpha158):
     def get_label_config(self):

@@ -97,8 +97,9 @@ task:
       weight_decay: 0.001
       early_stop: 10
       metric: loss
-      loss: precise_margin_ranking_paper
-      lamb_precise_margin_ranking: 0.8
+      loss: precise_margin_ranking_w_mse
+      lamb1_precise_margin_ranking: 1
+      lamb2_precise_margin_ranking: 1000
       func_precise_margin_ranking: linear
       base_model: LSTM
       model_path: benchmarks/LSTM/csi300_lstm_ts.pkl

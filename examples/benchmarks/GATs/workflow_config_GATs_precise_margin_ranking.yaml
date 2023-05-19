@@ -98,7 +98,8 @@ task:
       early_stop: 10
       metric: loss
       loss: precise_margin_ranking_max_min
-      lamb_precise_margin_ranking: 0.8
+      lamb1_precise_margin_ranking: 0.8
+      lamb2_precise_margin_ranking: 0.2
       func_precise_margin_ranking: linear
       base_model: LSTM
       model_path: /home/ashotnanyan/qlib/examples/benchmarks/LSTM/csi300_lstm_ts.pkl

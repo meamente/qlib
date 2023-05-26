@@ -426,6 +426,7 @@ class GATs(Model):
         valid_loader = DataLoader(dl_valid, sampler=sampler_valid, num_workers=self.n_jobs, drop_last=True)
 
         save_path = get_or_create_path(save_path)
+        print("SAVE PATH: ", save_path)
         current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         tboard_writer = get_tensorboard_logger(save_path=join(self.tensorboard_path, f"GATs_{current_time}"))
         stop_steps = 0
@@ -451,7 +452,9 @@ class GATs(Model):
         pretrained_dict = {
             k: v for k, v in pretrained_model.state_dict().items() if k in model_dict  # pylint: disable=E1135
         }
+        gats_pret = torch.load('/home/erohar/qlib/examples/benchmarks/GATs/gats_orig.pth')
         model_dict.update(pretrained_dict)
+        model_dict.update(gats_pret)
         self.GAT_model.load_state_dict(model_dict)
         self.logger.info("Loading pretrained model Done...")
 

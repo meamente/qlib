@@ -22,8 +22,8 @@ class RollingTaskExample:
         experiment_name="rolling_exp",
         task_pool=None,  # if user want to  "rolling_task"
         task_config=None,
-        rolling_step=480,
-        rolling_type=RollingGen.ROLL_SD,
+        rolling_step=90,
+        rolling_type="sliding",
     ):
         # TaskManager config
         if task_config is None:
@@ -40,7 +40,8 @@ class RollingTaskExample:
             self.task_pool = task_pool
             self.trainer = TrainerRM(self.experiment_name, self.task_pool)
         self.task_config = task_config
-        self.rolling_gen = RollingGen(step=rolling_step, rtype=rolling_type)
+        print(rolling_type)
+        self.rolling_gen = RollingGen(step=rolling_step, rtype=RollingGen.ROLL_EX if rolling_type == "expanding" else RollingGen.ROLL_SD)
 
     # Reset all things to the first status, be careful to save important data
     def reset(self):
@@ -95,7 +96,7 @@ class RollingTaskExample:
             rec_filter_func=my_filter,
         )
         res = collector()
-        res['pred'][('GATs',)].to_pickle('pred.pkl')
+        res['pred'][('GATs',)].to_pickle(f'{self.experiment_name}_pred.pkl')
         print(collector())
 
     def main(self):

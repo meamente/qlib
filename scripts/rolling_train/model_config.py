@@ -12,15 +12,16 @@ model_config = {
                 "weight_decay": 0.001,
                 "early_stop": 10,
                 "metric": "loss",
-                "loss": "mse",
-                #"lamb1_precise_margin_ranking": 0.8,
-                #"lamb2_precise_margin_ranking": 0.2,
-                #"func_precise_margin_ranking": "linear",
+                "loss": "precise_margin_ranking_w_mse",
+                "lamb1_precise_margin_ranking": 0.8,
+                "lamb2_precise_margin_ranking": 0.2,
+                "func_precise_margin_ranking": "linear",
                 "base_model": "LSTM",
                 "model_path": "/home/erohar/qlib/examples/benchmarks/LSTM/csi300_lstm_ts.pkl",
                 "GPU": 0,
                 "tensorboard_path": "/home/erohar/qlib/tensorboard_logs",
-                "print_iter": 200
+                "print_iter": 200,
+                "seed": 1234
             }
         },
         "dataset": {
@@ -78,17 +79,6 @@ model_config = {
                                 "class": "Fillna",
                                 "kwargs": {
                                     "fields_group": "feature"
-                                }
-                            }
-                        ],
-                        "learn_processors": [
-                            {
-                                "class": "DropnaLabel"
-                            },
-                            {
-                                "class": "CSRankNorm",
-                                "kwargs": {
-                                    "fields_group": "label"
                                 }
                             }
                         ],

@@ -1,10 +1,10 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-
 from __future__ import division
 from __future__ import print_function
 
+import random
 import numpy as np
 import pandas as pd
 from ...utils import get_or_create_path
@@ -25,7 +25,6 @@ from ...model.base import Model
 from ...data.dataset.handler import DataHandlerLP
 from ...contrib.model.pytorch_lstm import LSTMModel
 from ...contrib.model.pytorch_gru import GRUModel
-
 
 class DailyBatchSampler(Sampler):
     def __init__(self, data_source):
@@ -173,8 +172,14 @@ class GATs(Model):
         )
 
         if self.seed is not None:
-            np.random.seed(self.seed)
-            torch.manual_seed(self.seed)
+            torch.manual_seed(seed)
+            torch.cuda.manual_seed(seed)
+            torch.cuda.manual_seed_all(seed)
+            np.random.seed(seed)
+            random.seed(seed)
+            torch.backends.cudnn.benchmark = False
+            torch.backends.cudnn.deterministic = True
+            torch.set_deterministic(True)
 
         self.GAT_model = GATModel(
             d_feat=self.d_feat,

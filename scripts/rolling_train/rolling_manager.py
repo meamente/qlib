@@ -1,5 +1,8 @@
 from pprint import pprint
-
+import os
+import numpy as np
+import torch
+import random
 import fire
 import qlib
 from qlib.constant import REG_US
@@ -11,6 +14,14 @@ from qlib.model.ens.group import RollingGroup
 from qlib.model.trainer import TrainerR, TrainerRM, task_train
 from model_config import model_config
 
+"""torch.manual_seed(1234)
+torch.cuda.manual_seed(1234)
+torch.cuda.manual_seed_all(1234)
+np.random.seed(1234)
+random.seed(1234)
+torch.backends.cudnn.benchmark = False
+torch.backends.cudnn.deterministic = True
+torch.set_deterministic(True)"""
 
 class RollingTaskExample:
     def __init__(
@@ -32,7 +43,7 @@ class RollingTaskExample:
             "task_url": task_url,
             "task_db_name": task_db_name,
         }
-        qlib.init(provider_uri=provider_uri, region=region, mongo=mongo_conf)
+        qlib.init(provider_uri=provider_uri, region=region)#, mongo=mongo_conf)
         self.experiment_name = experiment_name
         if task_pool is None:
             self.trainer = TrainerR(experiment_name=self.experiment_name)

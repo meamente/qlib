@@ -1,7 +1,7 @@
 model_config = {
         "model": {
             "class": "GATs",
-            "module_path": "qlib.contrib.model.pytorch_gats_ts",
+            "module_path": "qlib.contrib.model.pytorch_gats_ts_ds",
             "kwargs": {
                 "d_feat": 20,
                 "hidden_size": 64,
